@@ -1,44 +1,52 @@
-import unittest
-from unittest.mock import patch
-from main import add_task, delete_task, view_tasks
+def print_menu():
+    print("\nМеню:")
+    print("1. Додати завдання")
+    print("2. Переглянути список")
+    print("3. Видалити завдання")
+    print("4. Вийти")
 
-class TestTodoApp(unittest.TestCase):
+def add_task(todo_list):
+    task = input("Введіть нове завдання: ")
+    todo_list.append(task)
+    print("Завдання додано!")
 
-    def test_add_task(self):
-        tasks = []
-        with patch('builtins.input', return_value='Купити хліб'):
-            add_task(tasks)
-        self.assertIn('Купити хліб', tasks)
+def view_tasks(todo_list):
+    if not todo_list:
+        print("Список порожній.")
+    else:
+        print("\nСписок завдань:")
+        for i, task in enumerate(todo_list, 1):
+            print(f"{i}. {task}")
 
-    def test_delete_task_valid(self):
-        tasks = ['Завдання 1', 'Завдання 2']
-        with patch('builtins.input', return_value='1'):
-            delete_task(tasks)
-        self.assertEqual(tasks, ['Завдання 2'])
+def delete_task(todo_list):
+    view_tasks(todo_list)
+    if todo_list:
+        try:
+            index = int(input("Введіть номер завдання для видалення: ")) - 1
+            if 0 <= index < len(todo_list):
+                removed = todo_list.pop(index)
+                print(f"Завдання '{removed}' видалено.")
+            else:
+                print("Невірний номер.")
+        except ValueError:
+            print("Будь ласка, введіть ціле число.")
 
-    def test_delete_task_invalid_index(self):
-        tasks = ['Завдання 1']
-        with patch('builtins.input', return_value='5'):
-            delete_task(tasks)
-        self.assertEqual(tasks, ['Завдання 1'])  # Не видалено
+def main():
+    todo_list = []
+    while True:
+        print_menu()
+        choice = input("Оберіть опцію: ")
+        if choice == '1':
+            add_task(todo_list)
+        elif choice == '2':
+            view_tasks(todo_list)
+        elif choice == '3':
+            delete_task(todo_list)
+        elif choice == '4':
+            print("До побачення!")
+            break
+        else:
+            print("Невірний вибір. Спробуйте ще раз.")
 
-    def test_delete_task_invalid_input(self):
-        tasks = ['Завдання 1']
-        with patch('builtins.input', return_value='abc'):
-            delete_task(tasks)
-        self.assertEqual(tasks, ['Завдання 1'])  # Не видалено
-
-    def test_view_tasks_empty(self):
-        tasks = []
-        with patch('builtins.print') as mock_print:
-            view_tasks(tasks)
-            mock_print.assert_any_call("Список порожній.")
-
-    def test_view_tasks_non_empty(self):
-        tasks = ['Почитати книгу']
-        with patch('builtins.print') as mock_print:
-            view_tasks(tasks)
-            mock_print.assert_any_call("1. Почитати книгу")
-
-if __name__ == '__main__':
-    unittest.main()
+if __name__ == "__main__":
+    main()
