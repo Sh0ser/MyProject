@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch
-from src/main import add_task, delete_task, view_tasks
+from src.main import add_task, delete_task, view_tasks
 
 class TestTodoApp(unittest.TestCase):
 
